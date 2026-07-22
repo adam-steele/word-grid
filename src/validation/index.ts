@@ -5,7 +5,7 @@ import type {
   ProgressData,
   UnlockToken,
 } from '@shared/types.js';
-import { isServerValidation, getApiUrl } from '@shared/config.js';
+import { isServerValidation, getApiBaseUrl } from '@shared/config.js';
 import { ClientValidationProvider } from './client-provider.js';
 import { ServerValidationProvider } from './server-provider.js';
 
@@ -33,7 +33,7 @@ let instance: ValidationProvider | null = null;
 export function getValidationProvider(): ValidationProvider {
   if (!instance) {
     instance = isServerValidation()
-      ? new ServerValidationProvider(getApiUrl()!)
+      ? new ServerValidationProvider(getApiBaseUrl())
       : new ClientValidationProvider();
   }
   return instance;

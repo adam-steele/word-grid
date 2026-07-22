@@ -9,14 +9,13 @@ import { getProgressSecret } from '@shared/config.js';
 import type { ValidationProvider } from './index.js';
 
 /**
- * Server-side validation via Cloudflare Worker.
- * Level data and thresholds never ship to the client in this mode.
+ * Server-side validation via Vercel Edge API (same origin) or external API URL.
  */
 export class ServerValidationProvider implements ValidationProvider {
-  constructor(private readonly apiUrl: string) {}
+  constructor(private readonly apiBase: string = '') {}
 
   private async post<T>(path: string, body: unknown): Promise<T> {
-    const res = await fetch(`${this.apiUrl}${path}`, {
+    const res = await fetch(`${this.apiBase}${path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

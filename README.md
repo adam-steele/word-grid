@@ -94,16 +94,79 @@ On first build, **NASPA NWL2023** (~190k words, official US/Canada Scrabble lexi
 - Diagonal lines counted **once** (no bidirectional duplicates)
 - Cross-word scoring uses **locked rows only** — no phantom highlights while typing
 
+## Deploy to Vercel
+
+Everything runs on **Vercel free tier**: static game + Edge API (`/api/level/*`).
+
+### 1. Connect the repo
+
+1. Go to [vercel.com/new](https://vercel.com/new) and import **adam-steele/word-grid**.
+2. Confirm settings (from `vercel.json`):
+   - **Build command:** `npm run build`
+   - **Output directory:** `dist`
+
+### 2. Environment variables
+
+Add these in **Project → Settings → Environment Variables** (Production):
+
+| Variable | Example | Notes |
+|----------|---------|--------|
+| `VITE_VALIDATION_MODE` | `server` | Server score verification |
+| `VITE_PROGRESS_SECRET` | `openssl rand -hex 32` | Client progress signing (in bundle) |
+| `PROGRESS_SECRET` | same or separate random | **Server only** — unlock tokens |
+| `VITE_LEVEL_ENCODE_KEY` | `openssl rand -hex 32` | Encodes levels at build time |
+
+Leave `VITE_API_URL` **unset** — the app calls same-origin `/api/...` on Vercel.
+
+Redeploy after changing env vars.
+
+### 3. Deploy
+
+Deploy from the Vercel dashboard or CLI:
+
+```bash
+npx vercel --prod
+```
+
+Check the API: `GET https://your-app.vercel.app/api/health`
+
+### Local development
+
+| Command | Use |
+|---------|-----|
+| `npm run dev` | Client mode — fast Vite dev, no API |
+| `npm run dev:vercel` | Server mode — Vite + Edge API together |
+
+Copy `.env.example` to `.env` for local secrets.
+
+---
+
+## Security & validation modes
+
+| Mode | When | Score check |
+|------|------|-------------|
+| **client** | Local `npm run dev` | Browser recomputes |
+| **server** | Vercel production | Edge API recomputes |
+
+**Server mode (Vercel):** level pass/fail and unlock tokens are authoritative. `PROGRESS_SECRET` never ships to the browser. Progress/high scores still live in localStorage (signed with `VITE_PROGRESS_SECRET`).
+
+**Client mode:** fine for casual play; secrets and level blobs are in the JS bundle.
+
+The optional **Cloudflare Worker** in `worker/` still works if you prefer that over Vercel Edge — set `VITE_API_URL` to the Worker URL.
+
+---
+
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Build data + Vite dev server |
+| `npm run dev` | Client mode — Vite dev server |
+| `npm run dev:vercel` | Server mode — Vercel dev (site + API) |
 | `npm run build` | Production build |
 | `npm run build:data` | Dictionary, position stats, encoded levels |
 | `npm test` | Run unit tests |
-| `npm run worker:dev` | Local Worker |
-| `npm run worker:deploy` | Deploy Worker |
+| `npm run worker:dev` | Optional Cloudflare Worker locally |
+| `npm run worker:deploy` | Optional Cloudflare Worker deploy |
 
 ## Scoring
 
@@ -117,9 +180,11 @@ multipliers  = horizontal ×1.0, vertical ×1.5, diagonal ×2.0
 ## Project layout
 
 ```
+api/              Vercel Edge API routes
+lib/server/       Shared level/score handlers
 src/validation/   ValidationProvider (client ↔ server switch)
 src/storage/      Signed progress + practice high scores
-shared/           Types, scoring, codec, crypto (client + worker)
-worker/           Cloudflare Worker
+shared/           Types, scoring, word-finder, crypto
+worker/           Optional Cloudflare Worker (legacy)
 scripts/          Build pipeline
 ```

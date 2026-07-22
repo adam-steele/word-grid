@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run build:data && vite",
+    "dev:vercel": "vercel dev",
     "build": "npm run build:data && tsc && vite build",
     "build:data": "tsx scripts/build-dictionary.ts && tsx scripts/encode-levels.ts",
     "preview": "vite preview",

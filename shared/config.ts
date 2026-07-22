@@ -7,11 +7,18 @@ export function getValidationMode(): ValidationMode {
 }
 
 export function getApiUrl(): string | undefined {
-  return import.meta.env.VITE_API_URL as string | undefined;
+  const url = import.meta.env.VITE_API_URL as string | undefined;
+  if (!url) return undefined;
+  return url.replace(/\/$/, '');
+}
+
+/** Same-origin API when VITE_API_URL is unset */
+export function getApiBaseUrl(): string {
+  return getApiUrl() ?? '';
 }
 
 export function isServerValidation(): boolean {
-  return getValidationMode() === 'server' && Boolean(getApiUrl());
+  return getValidationMode() === 'server';
 }
 
 export function getProgressSecret(): string {

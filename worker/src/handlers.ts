@@ -1,79 +1,14 @@
-import type { LevelCompleteResponse, UnlockToken } from '../../shared/types.js';
-import { hmacSign, hmacVerify } from '../../shared/crypto.js';
-import { findScoringWords } from './scoring.js';
-import { getServerLevel, loadServerDictionaryForGrid } from './data.js';
+/** Cloudflare Worker — thin router; shared logic lives in lib/server */
+import type { UnlockToken } from '../../shared/types.js';
+import {
+  handleHealth,
+  handleLevelComplete,
+  handleLevelLoad,
+} from '../../lib/server/handlers.js';
 
 export interface Env {
   PROGRESS_SECRET: string;
-  /** Comma-separated allowed origins, e.g. "http://localhost:5173,https://yourgame.pages.dev" */
   ALLOWED_ORIGINS?: string;
-}
-
-export async function handleLevelLoad(
-  levelId: number,
-): Promise<Response> {
-  const level = getServerLevel(levelId);
-  if (!level) {
-    return Response.json({ error: 'Level not found' }, { status: 404 });
-  }
-
-  // In server mode, return level without threshold to client... 
-  // Actually we need threshold client-side for UI display. 
-  // For true hiding, only return prefilled + grid; threshold checked server-side only.
-  // v1: return full level — threshold still verified server-side on complete.
-  return Response.json(level);
-}
-
-export async function handleLevelComplete(
-  body: { levelId: number; grid: string[][]; unlockToken?: UnlockToken },
-  env: Env,
-): Promise<Response> {
-  const level = getServerLevel(body.levelId);
-  if (!level) {
-    return Response.json({ error: 'Level not found' }, { status: 404 });
-  }
-
-  const dict = loadServerDictionaryForGrid(level.grid.rows, level.grid.cols);
-  const words = findScoringWords(body.grid, dict);
-  const score = words.reduce((s, w) => s + w.score, 0);
-  const passed = score >= level.threshold;
-
-  const response: LevelCompleteResponse = {
-    passed,
-    score,
-    threshold: level.threshold,
-  };
-
-  if (passed) {
-    const token = await issueUnlockToken(body.levelId, score, env.PROGRESS_SECRET);
-    response.unlockToken = token;
-  }
-
-  return Response.json(response);
-}
-
-async function issueUnlockToken(
-  levelId: number,
-  score: number,
-  secret: string,
-): Promise<UnlockToken> {
-  const issuedAt = Date.now();
-  const payload = JSON.stringify({ levelId, nextLevel: levelId + 1, score, issuedAt });
-  const sig = await hmacSign(payload, secret);
-  return { levelId, nextLevel: levelId + 1, score, sig, issuedAt };
-}
-
-export async function verifyUnlockToken(
-  token: UnlockToken,
-  secret: string,
-): Promise<boolean> {
-  const payload = JSON.stringify({
-    levelId: token.levelId,
-    nextLevel: token.nextLevel,
-    score: token.score,
-    issuedAt: token.issuedAt,
-  });
-  return hmacVerify(payload, token.sig, secret);
 }
 
 function corsHeaders(origin: string | null, env: Env): HeadersInit {
@@ -86,11 +21,7 @@ function corsHeaders(origin: string | null, env: Env): HeadersInit {
   };
 }
 
-export function withCors(
-  response: Response,
-  request: Request,
-  env: Env,
-): Response {
+function withCors(response: Response, request: Request, env: Env): Response {
   const headers = new Headers(response.headers);
   const cors = corsHeaders(request.headers.get('Origin'), env);
   Object.entries(cors).forEach(([k, v]) => headers.set(k, v));
@@ -116,11 +47,11 @@ export async function handleRequest(request: Request, env: Env): Promise<Respons
         grid: string[][];
         unlockToken?: UnlockToken;
       };
-      return withCors(await handleLevelComplete(body, env), request, env);
+      return withCors(await handleLevelComplete(body, env.PROGRESS_SECRET), request, env);
     }
 
-    if (url.pathname === '/health') {
-      return withCors(Response.json({ ok: true, mode: 'server' }), request, env);
+    if (url.pathname === '/health' && request.method === 'GET') {
+      return withCors(handleHealth(), request, env);
     }
 
     return withCors(Response.json({ error: 'Not found' }, { status: 404 }), request, env);

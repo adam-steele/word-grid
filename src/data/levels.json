@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Warm Up",
+    "grid": { "rows": 6, "cols": 5 },
+    "prefilled": [],
+    "threshold": 25
+  },
+  {
+    "id": 2,
+    "name": "Easy Vowel",
+    "grid": { "rows": 6, "cols": 5 },
+    "prefilled": [{ "row": 2, "col": 1, "letter": "E" }],
+    "threshold": 35
+  },
+  {
+    "id": 3,
+    "name": "Two Hints",
+    "grid": { "rows": 6, "cols": 5 },
+    "prefilled": [
+      { "row": 2, "col": 1, "letter": "O" },
+      { "row": 4, "col": 3, "letter": "A" }
+    ],
+    "threshold": 45
+  },
+  {
+    "id": 4,
+    "name": "Short Words",
+    "grid": { "rows": 5, "cols": 4 },
+    "prefilled": [{ "row": 1, "col": 0, "letter": "S" }],
+    "threshold": 40
+  },
+  {
+    "id": 5,
+    "name": "Mid Grid",
+    "grid": { "rows": 6, "cols": 5 },
+    "prefilled": [
+      { "row": 0, "col": 2, "letter": "R" },
+      { "row": 3, "col": 4, "letter": "E" }
+    ],
+    "threshold": 55
+  },
+  {
+    "id": 6,
+    "name": "Three Locks",
+    "grid": { "rows": 7, "cols": 5 },
+    "prefilled": [
+      { "row": 2, "col": 0, "letter": "T" },
+      { "row": 4, "col": 2, "letter": "I" },
+      { "row": 5, "col": 4, "letter": "S" }
+    ],
+    "threshold": 65
+  },
+  {
+    "id": 7,
+    "name": "Hard Start",
+    "grid": { "rows": 6, "cols": 5 },
+    "prefilled": [{ "row": 1, "col": 0, "letter": "X" }],
+    "threshold": 50
+  },
+  {
+    "id": 8,
+    "name": "Expert",
+    "grid": { "rows": 6, "cols": 6 },
+    "prefilled": [
+      { "row": 0, "col": 0, "letter": "Q" },
+      { "row": 2, "col": 3, "letter": "Z" },
+      { "row": 4, "col": 1, "letter": "O" }
+    ],
+    "threshold": 75
+  }
+]

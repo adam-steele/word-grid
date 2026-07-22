@@ -1,0 +1,26 @@
+{
+  "name": "word-grid",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build:data && vite",
+    "build": "npm run build:data && tsc && vite build",
+    "build:data": "tsx scripts/build-dictionary.ts && tsx scripts/encode-levels.ts",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "worker:dev": "wrangler dev",
+    "worker:deploy": "wrangler deploy",
+    "worker:build-data": "tsx scripts/build-worker-data.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "@types/node": "^22.13.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.14",
+    "vitest": "^3.0.5",
+    "wrangler": "^3.109.2"
+  }
+}

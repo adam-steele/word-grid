@@ -1,0 +1,18 @@
+name = "word-grid-api"
+main = "worker/src/index.ts"
+compatibility_date = "2024-12-01"
+
+# Secrets — set via: wrangler secret put PROGRESS_SECRET
+# [vars]
+# ALLOWED_ORIGINS = "http://localhost:5173"
+
+[vars]
+ALLOWED_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173"
+
+# Bundle worker data (levels + dictionaries) into the worker
+rules = [
+  { type = "Text", globs = ["worker/data/**"], fallthrough = true }
+]
+
+[build]
+command = "npm run build:data"

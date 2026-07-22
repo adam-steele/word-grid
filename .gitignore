@@ -1,0 +1,15 @@
+node_modules
+dist
+worker/dist
+.env
+.env.local
+public/levels/*.enc
+public/dictionary/**/*.json
+worker/data/*.json
+scripts/data/nwl2023.txt
+scripts/data/enable.txt
+scripts/data/popular.txt
+src/data/position-stats-*.json
+src/data/flexibility-*.json
+.DS_Store
+*.local

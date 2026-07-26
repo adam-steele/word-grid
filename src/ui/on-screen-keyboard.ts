@@ -50,15 +50,17 @@ export function renderOnScreenKeyboard(
     const renderLetterKey = (ch: string): string =>
       `<button type="button" class="keyboard-key" data-key="${ch}" aria-label="${ch}">${ch}</button>`;
 
-    const topRows = ROWS.slice(0, 2)
-      .map(
-        (row) => `
-        <div class="keyboard-row" role="group" aria-label="Letter keys">
-          ${[...row].map(renderLetterKey).join('')}
-        </div>
-      `,
-      )
-      .join('');
+    const topRow = `
+      <div class="keyboard-row keyboard-row-top" role="group" aria-label="Top letter keys">
+        ${[...ROWS[0]!].map(renderLetterKey).join('')}
+      </div>
+    `;
+
+    const middleRow = `
+      <div class="keyboard-row keyboard-row-middle" role="group" aria-label="Middle letter keys">
+        ${[...ROWS[1]!].map(renderLetterKey).join('')}
+      </div>
+    `;
 
     const bottomRow = `
       <div class="keyboard-row keyboard-row-bottom" role="group" aria-label="Letter and action keys">
@@ -79,7 +81,8 @@ export function renderOnScreenKeyboard(
             Hide keyboard
           </button>
         </div>
-        ${topRows}
+        ${topRow}
+        ${middleRow}
         ${bottomRow}
       </div>
     `;

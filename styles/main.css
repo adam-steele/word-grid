@@ -18,17 +18,46 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  min-height: 100%;
+  min-height: 100dvh;
 }
 
 #app {
+  width: 100%;
   max-width: 520px;
   margin: 0 auto;
   padding: 1.5rem 1rem 3rem;
+}
+
+#app:has(.session) {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#app:has(.session) .header {
+  display: none;
+}
+
+#app:has(.session) main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -83,7 +112,8 @@ body {
   display: grid;
   grid-template-columns: repeat(var(--cols), 1fr);
   grid-template-rows: repeat(var(--rows), 1fr);
-  gap: 5px;
+  --grid-gap: 8px;
+  gap: var(--grid-gap);
   margin: 1rem 0;
 }
 
@@ -96,6 +126,43 @@ body {
   margin: 0;
   position: relative;
   z-index: 1;
+}
+
+.session .grid-wrap {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.session .grid-wrap .grid {
+  --grid-gap: 6px;
+  --tile: min(
+    calc((100cqw - (var(--cols) - 1) * var(--grid-gap)) / var(--cols)),
+    calc((100cqh - (var(--rows) - 1) * var(--grid-gap)) / var(--rows)),
+    72px
+  );
+  grid-template-columns: repeat(var(--cols), var(--tile));
+  grid-template-rows: repeat(var(--rows), var(--tile));
+  gap: var(--grid-gap);
+  width: max-content;
+  height: max-content;
+  margin: 0;
+}
+
+.session .cell {
+  width: var(--tile);
+  height: var(--tile);
+  font-size: clamp(1rem, calc(var(--tile) * 0.44), 2rem);
+  border-radius: 2px;
+}
+
+.session .cell-points {
+  right: 5px;
+  bottom: 4px;
+  font-size: clamp(0.5625rem, calc(var(--tile) * 0.17), 0.8125rem);
 }
 
 .grid-wrap-final {
@@ -136,9 +203,9 @@ body {
 
 .cell-points {
   position: absolute;
-  right: 3px;
-  bottom: 2px;
-  font-size: 0.55rem;
+  right: 4px;
+  bottom: 3px;
+  font-size: 0.6875rem;
   font-weight: 700;
   line-height: 1;
   color: var(--text-muted);
@@ -333,18 +400,107 @@ body {
   margin-top: 0.25rem;
 }
 
-.session-header {
+.session {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 10px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  flex-direction: column;
 }
 
-.session-header h2 {
-  margin: 0;
-  font-size: 1rem;
-  flex: 1;
+.session-header {
+  flex: 0 0 50px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0 2px;
+}
+
+.session-back {
+  justify-self: start;
+  padding: 0.35rem 0.25rem;
+  font-size: 0.8125rem;
+}
+
+.session-title-wrap {
   text-align: center;
+  min-width: 0;
+}
+
+.session-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+}
+
+.session-subtitle {
+  margin: 0.125rem 0 0;
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+.session-header #score-panel {
+  justify-self: end;
+  text-align: right;
+}
+
+.session-board {
+  flex: 1 1 auto;
+  min-height: 0;
+  container-type: size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+@supports not (width: 1cqw) {
+  .session .grid-wrap .grid {
+    --tile: min(calc((100vw - 40px - (var(--cols) - 1) * var(--grid-gap)) / var(--cols)), 62px);
+  }
+}
+
+.session #grid-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.session-footer {
+  flex: 0 0 auto;
+  padding: 0 0 max(10px, env(safe-area-inset-bottom, 0px));
+}
+
+.session-hint {
+  flex-shrink: 0;
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.session #message {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+
+.session #message:empty {
+  display: none;
+}
+
+.session #keyboard-root {
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .grid.shake {
@@ -445,18 +601,26 @@ body {
 }
 
 .keyboard {
-  margin-top: 1.25rem;
+  margin-top: 0;
+  --key-gap: 6px;
+  --key-height: clamp(52px, 13vw, 58px);
+}
+
+.session .keyboard {
+  width: 100%;
+  padding: 0 2px;
 }
 
 .keyboard-toolbar {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 0.35rem;
+  margin-bottom: 6px;
+  width: 100%;
 }
 
 .keyboard-toggle {
   font-size: 0.75rem;
-  padding: 0.35rem 0.5rem;
+  padding: 0.25rem 0.35rem;
 }
 
 .keyboard-collapsed {
@@ -467,33 +631,51 @@ body {
 .keyboard-row {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  margin-bottom: 4px;
+  gap: var(--key-gap);
+  margin: 0 auto 6px;
+  width: 100%;
 }
 
-.keyboard-row-bottom {
-  padding: 0 2px;
+.keyboard-row-middle {
+  width: calc((100% - 9 * var(--key-gap)) * 0.9 + 8 * var(--key-gap));
+  max-width: 100%;
 }
 
-.keyboard-key-wide {
-  flex: 1.4;
-  max-width: 3.75rem;
-  font-size: 0.75rem;
+.keyboard-row-top .keyboard-key,
+.keyboard-row-middle .keyboard-key,
+.keyboard-row-bottom .keyboard-key:not(.keyboard-key-wide) {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 56px;
+  width: auto;
+  height: var(--key-height);
 }
+
+.keyboard-row-bottom .keyboard-key-wide {
+  flex: 1.35 1 0;
+  min-width: 0;
+  max-width: 76px;
+  width: auto;
+  height: var(--key-height);
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+}
+
 .keyboard-key {
-  flex: 1;
-  max-width: 2.5rem;
-  min-height: 2.75rem;
   padding: 0;
   border: none;
   border-radius: 4px;
   background: #818384;
   color: var(--text);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
   touch-action: manipulation;
   user-select: none;
+}
+
+.session .keyboard-key {
+  font-size: clamp(0.75rem, 2.8vw, 0.875rem);
 }
 
 .keyboard-key:active {
@@ -505,16 +687,24 @@ body {
     font-size: 1.25rem;
   }
 
+  .cell-points {
+    font-size: 0.625rem;
+  }
+
   .level-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  #app {
-    padding: 1rem 0.75rem 2rem;
+  .session {
+    padding: 0 6px;
   }
 
-  .keyboard-key {
-    min-height: 2.5rem;
-    font-size: 0.8125rem;
+  .session-hint {
+    font-size: 0.6875rem;
+  }
+
+  .session .keyboard {
+    --key-height: clamp(48px, 14vw, 54px);
+    --key-gap: 5px;
   }
 }

@@ -97,15 +97,22 @@ export async function runSession(
 
     container.innerHTML = `
       <div class="session">
-        <div class="session-header">
-          <button class="btn btn-ghost" id="back-btn">← Menu</button>
-          <h2>${levelName}${levelId ? ` (Level ${levelId})` : ''}</h2>
+        <header class="session-header">
+          <button class="btn btn-ghost session-back" id="back-btn" type="button">← Menu</button>
+          <div class="session-title-wrap">
+            <h1 class="session-title">Word Grid</h1>
+            <p class="session-subtitle">${levelName}${levelId ? ` · Level ${levelId}` : ''}</p>
+          </div>
           <div id="score-panel"></div>
+        </header>
+        <div class="session-board">
+          <div id="grid-root"></div>
         </div>
-        <div id="grid-root"></div>
-        <p class="hint">Type or click letters · Backspace to delete · Enter to lock row</p>
-        <div id="message"></div>
-        <div id="keyboard-root"></div>
+        <footer class="session-footer">
+          <p class="session-hint">Type or click letters · Backspace to delete · Enter to lock row</p>
+          <div id="message"></div>
+          <div id="keyboard-root"></div>
+        </footer>
       </div>
     `;
 

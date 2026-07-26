@@ -444,6 +444,63 @@ body {
   gap: 0.5rem;
 }
 
+.keyboard {
+  margin-top: 1.25rem;
+}
+
+.keyboard-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.35rem;
+}
+
+.keyboard-toggle {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.keyboard-collapsed {
+  display: flex;
+  justify-content: center;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.keyboard-row-actions {
+  margin-top: 2px;
+}
+
+.keyboard-key {
+  flex: 1;
+  max-width: 2.5rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: #818384;
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.keyboard-key:active {
+  background: #6b6d6e;
+}
+
+.keyboard-key-wide {
+  flex: 2;
+  max-width: 5.5rem;
+  font-size: 0.75rem;
+}
+
 @media (max-width: 400px) {
   .cell {
     font-size: 1.25rem;
@@ -455,5 +512,10 @@ body {
 
   #app {
     padding: 1rem 0.75rem 2rem;
+  }
+
+  .keyboard-key {
+    min-height: 2.5rem;
+    font-size: 0.8125rem;
   }
 }

@@ -1,5 +1,9 @@
 /**
  * Builds dictionary JSON + position-stats from NASPA Word List (NWL2023).
+ *
+ * Play / scoring filters:
+ * - 3–4 letters: NWL ∩ Google 10k common English (− blocklist)
+ * - 5+ letters:  NWL ∩ ENABLE standard dictionary (− blocklist)
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -22,6 +26,9 @@ const WORD_LENGTHS = [3, 4, 5, 6, 7, 8, 9, 10] as const;
 const NWL2023_URL =
   'https://raw.githubusercontent.com/scrabblewords/scrabblewords/main/words/North-American/NWL2023.txt';
 
+const GOOGLE_10K_URL =
+  'https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english.txt';
+
 const FALLBACK_WORDS = [
   'CAT', 'DOG', 'TEA', 'SEA', 'ART', 'RUN', 'SUN', 'CAR',
   'ABOUT', 'AFTER', 'AGAIN', 'ALONE', 'APPLE', 'BEACH', 'BRAIN', 'CHAIR',
@@ -32,7 +39,7 @@ const FALLBACK_WORDS = [
 
 function parseNwlLine(line: string): string | null {
   const trimmed = line.trim();
-  if (!trimmed) return null;
+  if (!trimmed || trimmed.startsWith('#')) return null;
   const word = trimmed.split(/\s+/)[0]!.toUpperCase();
   if (!/^[A-Z]+$/.test(word)) return null;
   return word;
@@ -47,21 +54,41 @@ function parseWords(text: string): string[] {
   return [...words];
 }
 
-async function downloadNwl(): Promise<string[] | null> {
+function parseWordList(text: string): Set<string> {
+  return new Set(
+    text
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'))
+      .map((w) => w.toUpperCase())
+      .filter((w) => /^[A-Z]{3,}$/.test(w)),
+  );
+}
+
+async function downloadText(url: string, cacheName: string): Promise<string | null> {
+  const cachePath = join(dataDir, cacheName);
+  if (existsSync(cachePath)) return readFileSync(cachePath, 'utf8');
+
   try {
-    console.log(`Downloading NWL2023 from ${NWL2023_URL}`);
-    const res = await fetch(NWL2023_URL);
+    console.log(`Downloading ${cacheName} from ${url}`);
+    const res = await fetch(url);
     if (!res.ok) return null;
     const text = await res.text();
     mkdirSync(dataDir, { recursive: true });
-    writeFileSync(join(dataDir, 'nwl2023.txt'), text, 'utf8');
-    const words = parseWords(text);
-    console.log(`Cached NWL2023 → scripts/data/nwl2023.txt (${words.length} words)`);
-    return words;
+    writeFileSync(cachePath, text, 'utf8');
+    return text;
   } catch (err) {
-    console.warn('NWL2023 download failed:', err);
+    console.warn(`Download failed for ${cacheName}:`, err);
     return null;
   }
+}
+
+async function downloadNwl(): Promise<string[] | null> {
+  const text = await downloadText(NWL2023_URL, 'nwl2023.txt');
+  if (!text) return null;
+  const words = parseWords(text);
+  console.log(`Cached NWL2023 → scripts/data/nwl2023.txt (${words.length} words)`);
+  return words;
 }
 
 async function loadWords(): Promise<string[]> {
@@ -90,26 +117,65 @@ async function loadWords(): Promise<string[]> {
   return FALLBACK_WORDS.map((w) => w.toUpperCase());
 }
 
-function loadCommonWords(): Set<string> {
-  const path = join(dataDir, 'popular.txt');
+function loadEnableWords(): Set<string> {
+  const path = join(dataDir, 'enable.txt');
   if (!existsSync(path)) {
-    console.warn('popular.txt not found — scoring will use full dictionary');
+    console.warn('enable.txt not found — 5+ letter filter will use full NWL');
+    return new Set();
+  }
+  const words = parseWordList(readFileSync(path, 'utf8'));
+  console.log(`ENABLE dictionary: ${words.size} words`);
+  return words;
+}
+
+async function loadGoogle10k(): Promise<Set<string>> {
+  const text =
+    (existsSync(join(dataDir, 'google-10000-english.txt'))
+      ? readFileSync(join(dataDir, 'google-10000-english.txt'), 'utf8')
+      : null) ?? (await downloadText(GOOGLE_10K_URL, 'google-10000-english.txt'));
+
+  if (!text) {
+    console.warn('google-10000-english.txt not found — 3/4-letter filter will fall back to ENABLE');
     return new Set();
   }
 
-  const words = readFileSync(path, 'utf8')
-    .split(/\r?\n/)
-    .map((w) => w.trim().toUpperCase())
-    .filter((w) => /^[A-Z]{3,}$/.test(w));
-
-  return new Set(words);
+  const words = parseWordList(text);
+  console.log(`Google 10k common words: ${words.size}`);
+  return words;
 }
 
-/** Scoring uses common words for short lengths (fewer obscure diagonals) */
-function includeInScoring(word: string, common: Set<string>): boolean {
-  if (common.size === 0) return true;
-  if (word.length <= 4) return common.has(word);
-  return true;
+function loadBlocklist(): Set<string> {
+  const path = join(dataDir, 'blocklist.txt');
+  if (!existsSync(path)) return new Set();
+  return parseWordList(readFileSync(path, 'utf8'));
+}
+
+/** Row validation + general play dictionary */
+function includeInPlayDictionary(
+  word: string,
+  commonGoogle: Set<string>,
+  enableWords: Set<string>,
+  blocklist: Set<string>,
+): boolean {
+  if (blocklist.has(word)) return false;
+
+  const len = word.length;
+  if (len <= 4) {
+    if (commonGoogle.size === 0) return enableWords.size === 0 || enableWords.has(word);
+    return commonGoogle.has(word);
+  }
+  if (enableWords.size === 0) return true;
+  return enableWords.has(word);
+}
+
+/** Vertical / diagonal scoring — same filters as play */
+function includeInScoring(
+  word: string,
+  commonGoogle: Set<string>,
+  enableWords: Set<string>,
+  blocklist: Set<string>,
+): boolean {
+  return includeInPlayDictionary(word, commonGoogle, enableWords, blocklist);
 }
 
 type PositionStats = Record<number, Record<string, number>>;
@@ -138,9 +204,12 @@ function buildFlexibilityIndex(stats: PositionStats, length: number): Record<str
 }
 
 const allWords = await loadWords();
-const commonWords = loadCommonWords();
+const commonGoogle = await loadGoogle10k();
+const enableWords = loadEnableWords();
+const blocklist = loadBlocklist();
+
 console.log(`Total words (3+ letters): ${allWords.length}`);
-if (commonWords.size) console.log(`Common word filter: ${commonWords.size} words`);
+if (blocklist.size) console.log(`Blocklist: ${blocklist.size} words`);
 
 mkdirSync(outDir, { recursive: true });
 mkdirSync(scoringOutDir, { recursive: true });
@@ -149,8 +218,13 @@ mkdirSync(workerScoringOutDir, { recursive: true });
 mkdirSync(statsDir, { recursive: true });
 
 for (const len of WORD_LENGTHS) {
-  const filtered = allWords.filter((w) => w.length === len).sort();
-  const scoring = filtered.filter((w) => includeInScoring(w, commonWords));
+  const nwlAtLength = allWords.filter((w) => w.length === len).sort();
+  const filtered = nwlAtLength.filter((w) =>
+    includeInPlayDictionary(w, commonGoogle, enableWords, blocklist),
+  );
+  const scoring = filtered.filter((w) =>
+    includeInScoring(w, commonGoogle, enableWords, blocklist),
+  );
 
   writeFileSync(join(outDir, `${len}.json`), JSON.stringify(filtered));
   writeFileSync(join(workerOutDir, `${len}.json`), JSON.stringify(filtered));
@@ -160,10 +234,13 @@ for (const len of WORD_LENGTHS) {
   if (len >= 4) {
     const stats = buildPositionStats(filtered, len);
     writeFileSync(join(statsDir, `position-stats-${len}.json`), JSON.stringify(stats, null, 2));
-    writeFileSync(join(statsDir, `flexibility-${len}.json`), JSON.stringify(buildFlexibilityIndex(stats, len), null, 2));
+    writeFileSync(
+      join(statsDir, `flexibility-${len}.json`),
+      JSON.stringify(buildFlexibilityIndex(stats, len), null, 2),
+    );
   }
 
-  console.log(`Length ${len}: ${filtered.length} words (${scoring.length} for scoring)`);
+  console.log(`Length ${len}: ${filtered.length} play words (${scoring.length} for scoring)`);
 }
 
 const levelsSrc = join(root, 'src/data/levels.json');
@@ -172,4 +249,4 @@ if (existsSync(levelsSrc)) {
   writeFileSync(levelsDest, readFileSync(levelsSrc, 'utf8'));
 }
 
-console.log('\nDictionary build complete (NASPA NWL2023 + common-word scoring filter).');
+console.log('\nDictionary build complete (NWL + strict 3/4-letter + ENABLE 5+).');

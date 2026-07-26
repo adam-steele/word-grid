@@ -14,25 +14,37 @@ export function renderCellContent(letter: string): string {
 }
 
 const STROKE = {
-  vertical: { color: 'rgba(96, 165, 250, 0.55)', dash: '' },
-  diagonal: { color: 'rgba(251, 191, 36, 0.6)', dash: '0.15 0.1' },
+  vertical: { color: 'rgba(110, 117, 184, 0.92)', dash: '' },
+  diagonal: { color: 'rgba(255, 207, 64, 0.92)', dash: '0.15 0.1' },
 } as const;
 
 export type OverlayIntensity = 'play' | 'final';
+
+function axisSize(count: number, gapRatio: number): number {
+  return count + Math.max(0, count - 1) * gapRatio;
+}
+
+function cellCenter(index: number, gapRatio: number): number {
+  return index * (1 + gapRatio) + 0.5;
+}
 
 /** Crossword-style paths — rendered behind cells */
 export function renderWordOverlay(
   size: GridSize,
   breakdown: ScoreBreakdown[],
   intensity: OverlayIntensity = 'play',
+  gapRatio = 0.1,
 ): string {
   const words = breakdown.filter(
     (w) => w.direction === 'vertical' || w.direction === 'diagonal',
   );
   if (!words.length) return '';
 
-  const strokeWidth = intensity === 'play' ? 0.1 : 0.14;
-  const opacity = intensity === 'play' ? 0.7 : 0.85;
+  const strokeWidth = intensity === 'play' ? 0.08 : 0.11;
+  const opacity = intensity === 'play' ? 0.85 : 0.95;
+  const viewW = axisSize(size.cols, gapRatio);
+  const viewH = axisSize(size.rows, gapRatio);
+  const clipId = `grid-clip-${size.cols}x${size.rows}`;
 
   const vertical = words.filter((w) => w.direction === 'vertical');
   const diagonal = words.filter((w) => w.direction === 'diagonal');
@@ -41,7 +53,9 @@ export function renderWordOverlay(
     .map((word) => {
       const style =
         word.direction === 'vertical' ? STROKE.vertical : STROKE.diagonal;
-      const points = word.cells.map((c) => `${c.col + 0.5},${c.row + 0.5}`).join(' ');
+      const points = word.cells
+        .map((c) => `${cellCenter(c.col, gapRatio)},${cellCenter(c.row, gapRatio)}`)
+        .join(' ');
       return `
         <polyline
           class="word-path word-path-${word.direction}"
@@ -49,10 +63,11 @@ export function renderWordOverlay(
           fill="none"
           stroke="${style.color}"
           stroke-width="${strokeWidth}"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          stroke-linecap="butt"
+          stroke-linejoin="miter"
           stroke-dasharray="${style.dash}"
           opacity="${opacity}"
+          vector-effect="non-scaling-stroke"
         />
       `;
     })
@@ -61,11 +76,18 @@ export function renderWordOverlay(
   return `
     <svg
       class="word-overlay word-overlay-${intensity}"
-      viewBox="0 0 ${size.cols} ${size.rows}"
+      viewBox="0 0 ${viewW} ${viewH}"
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      ${shapes}
+      <defs>
+        <clipPath id="${clipId}">
+          <rect x="0" y="0" width="${viewW}" height="${viewH}" />
+        </clipPath>
+      </defs>
+      <g clip-path="url(#${clipId})">
+        ${shapes}
+      </g>
     </svg>
   `;
 }

@@ -1,0 +1,10 @@
+# Scrabble-valid words we never treat as playable (abbreviations, archaic, etc.)
+ESS
+RES
+SIS
+UNDEE
+QAT
+QIS
+SUQ
+ZAX
+ZOS

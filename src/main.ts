@@ -3,12 +3,7 @@ import { getValidationProvider } from './validation/index.js';
 import { renderMenu } from './ui/menu.js';
 
 async function boot(): Promise<void> {
-  const badge = document.getElementById('mode-badge');
-  const mode = getValidationMode();
-  if (badge) {
-    badge.textContent = `Validation: ${mode}`;
-    badge.className = mode === 'server' ? 'badge badge-server' : 'badge badge-client';
-  }
+  document.documentElement.dataset.validationMode = getValidationMode();
 
   // Warm progress load (validates signature early)
   const provider = getValidationProvider();

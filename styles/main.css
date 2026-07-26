@@ -75,27 +75,6 @@ body {
   margin-top: 1rem;
 }
 
-.badge {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-}
-
-.badge-client {
-  background: #1e3a5f;
-  color: #93c5fd;
-}
-
-.badge-server {
-  background: #3b1f1f;
-  color: #fca5a5;
-}
-
-.footer {
-  margin-top: 2rem;
-  text-align: center;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(var(--cols), 1fr);

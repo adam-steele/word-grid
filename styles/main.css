@@ -31,6 +31,10 @@ body {
   padding: 1.5rem 1rem 3rem;
 }
 
+.header {
+  text-align: center;
+}
+
 .header h1 {
   margin: 0;
   font-size: 2rem;

@@ -13,3 +13,5 @@ src/data/position-stats-*.json
 src/data/flexibility-*.json
 .DS_Store
 *.local
+.vercel
+.env*

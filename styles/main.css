@@ -471,10 +471,15 @@ body {
   margin-bottom: 4px;
 }
 
-.keyboard-row-actions {
-  margin-top: 2px;
+.keyboard-row-bottom {
+  padding: 0 2px;
 }
 
+.keyboard-key-wide {
+  flex: 1.4;
+  max-width: 3.75rem;
+  font-size: 0.75rem;
+}
 .keyboard-key {
   flex: 1;
   max-width: 2.5rem;
@@ -493,12 +498,6 @@ body {
 
 .keyboard-key:active {
   background: #6b6d6e;
-}
-
-.keyboard-key-wide {
-  flex: 2;
-  max-width: 5.5rem;
-  font-size: 0.75rem;
 }
 
 @media (max-width: 400px) {

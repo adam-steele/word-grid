@@ -47,18 +47,30 @@ export function renderOnScreenKeyboard(
       return;
     }
 
-    const letterRows = ROWS.map(
-      (row) => `
+    const renderLetterKey = (ch: string): string =>
+      `<button type="button" class="keyboard-key" data-key="${ch}" aria-label="${ch}">${ch}</button>`;
+
+    const topRows = ROWS.slice(0, 2)
+      .map(
+        (row) => `
         <div class="keyboard-row" role="group" aria-label="Letter keys">
-          ${[...row]
-            .map(
-              (ch) =>
-                `<button type="button" class="keyboard-key" data-key="${ch}" aria-label="${ch}">${ch}</button>`,
-            )
-            .join('')}
+          ${[...row].map(renderLetterKey).join('')}
         </div>
       `,
-    ).join('');
+      )
+      .join('');
+
+    const bottomRow = `
+      <div class="keyboard-row keyboard-row-bottom" role="group" aria-label="Letter and action keys">
+        <button type="button" class="keyboard-key keyboard-key-wide" data-key="Enter" aria-label="Enter">
+          Enter
+        </button>
+        ${[...ROWS[2]!].map(renderLetterKey).join('')}
+        <button type="button" class="keyboard-key keyboard-key-wide" data-key="Backspace" aria-label="Backspace">
+          ⌫
+        </button>
+      </div>
+    `;
 
     container.innerHTML = `
       <div class="keyboard">
@@ -67,15 +79,8 @@ export function renderOnScreenKeyboard(
             Hide keyboard
           </button>
         </div>
-        ${letterRows}
-        <div class="keyboard-row keyboard-row-actions" role="group" aria-label="Action keys">
-          <button type="button" class="keyboard-key keyboard-key-wide" data-key="Enter" aria-label="Enter">
-            Enter
-          </button>
-          <button type="button" class="keyboard-key keyboard-key-wide" data-key="Backspace" aria-label="Backspace">
-            ⌫
-          </button>
-        </div>
+        ${topRows}
+        ${bottomRow}
       </div>
     `;
 

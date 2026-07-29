@@ -86,6 +86,126 @@ body {
   gap: 0.75rem;
 }
 
+#main {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 7rem);
+}
+
+.menu-split {
+  flex: 1;
+  min-height: 0;
+  gap: 0;
+}
+
+.menu-primary,
+.menu-secondary {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.menu-secondary {
+  border-top: 1px solid rgba(255, 241, 181, 0.12);
+  padding-top: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.menu-secondary .hint {
+  margin-top: 0;
+  text-align: center;
+}
+
+.menu-footer-hint {
+  margin-top: auto;
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.tutorial-success {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+}
+
+.tutorial-next {
+  margin: 0;
+}
+
+.tutorial-prompt {
+  margin: 0 0 8px;
+  padding: 0.75rem 0.875rem;
+  background: rgba(114, 163, 132, 0.12);
+  border: 1px solid rgba(114, 163, 132, 0.35);
+  border-radius: 6px;
+  animation: tutorialFade 0.35s ease;
+}
+
+.tutorial-step {
+  margin: 0 0 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.tutorial-text {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.tutorial-text strong {
+  color: var(--ink);
+}
+
+.tutorial-session .session-hint {
+  display: none;
+}
+
+.tutorial-complete {
+  margin-top: 1rem;
+}
+
+.tutorial-outro {
+  margin: 1.25rem 0;
+  padding: 1rem;
+  background: rgba(255, 241, 181, 0.06);
+  border: 1px solid rgba(255, 241, 181, 0.18);
+  border-radius: 6px;
+}
+
+.tutorial-outro h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.tutorial-outro ul {
+  margin: 0;
+  padding-left: 1.125rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.tutorial-outro li + li {
+  margin-top: 0.5rem;
+}
+
+@keyframes tutorialFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .btn {
   border: none;
   border-radius: 4px;

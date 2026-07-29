@@ -8,7 +8,7 @@ export async function showGridConfig(container: HTMLElement): Promise<void> {
   container.innerHTML = `
     <div class="grid-config">
       <button class="btn btn-ghost" id="back-btn">← Menu</button>
-      <h2>Practice Setup</h2>
+      <h2>Free Play Setup</h2>
       <form id="config-form" class="config-form">
         <label>
           Word length (columns)

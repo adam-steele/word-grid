@@ -51,9 +51,10 @@ export function renderGrid(
   container.innerHTML = `
     ${legend}
     <div class="grid-wrap ${intensity === 'final' ? 'grid-wrap-final' : ''}">
-      ${overlay}
-      <div class="grid ${intensity === 'final' ? 'grid-final' : ''}" style="--cols: ${size.cols}; --rows: ${size.rows}" role="grid" aria-label="Word grid">
-        ${cells
+      <div class="grid-stage">
+        ${overlay}
+        <div class="grid ${intensity === 'final' ? 'grid-final' : ''}" style="--cols: ${size.cols}; --rows: ${size.rows}" role="grid" aria-label="Word grid">
+          ${cells
           .map((row, ri) =>
             row
               .map((cell, ci) => {
@@ -73,6 +74,7 @@ export function renderGrid(
               .join(''),
           )
           .join('')}
+        </div>
       </div>
     </div>
   `;

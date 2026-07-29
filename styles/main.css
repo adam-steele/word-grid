@@ -133,6 +133,15 @@ body {
   position: relative;
 }
 
+.grid-stage {
+  position: relative;
+}
+
+.session .grid-stage {
+  width: fit-content;
+  height: fit-content;
+}
+
 .session .grid-wrap {
   margin: 0;
   width: 100%;
@@ -172,9 +181,15 @@ body {
 }
 
 .grid-wrap-final {
+  width: 100%;
   max-width: 360px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.grid-wrap-final .grid-stage,
+.grid-wrap-final .grid {
+  width: 100%;
 }
 
 .word-overlay {
@@ -329,11 +344,6 @@ body {
 
 .final-grid {
   margin: 1rem 0;
-}
-
-.final-grid .grid {
-  margin: 0 auto;
-  max-width: 360px;
 }
 
 .breakdown-vertical h3 { color: var(--hl-vertical); }

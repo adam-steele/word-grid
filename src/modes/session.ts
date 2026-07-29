@@ -30,7 +30,7 @@ export async function runSession(
   levelId: number | null,
 ): Promise<void> {
   const provider = getValidationProvider();
-  let levelName = 'Practice';
+  let levelName = 'Free Play';
   let threshold: number | null = null;
   let gridSize: GridSize;
   let gameGrid: GameGrid;
@@ -73,7 +73,7 @@ export async function runSession(
     }
 
     renderGameOver(container, final, {
-      title: levelId ? `${levelName} — Level ${levelId}` : 'Practice Complete',
+      title: levelId ? `${levelName} — Level ${levelId}` : 'Free Play Complete',
       score: final.total,
       threshold,
       passed,

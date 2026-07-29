@@ -7,7 +7,7 @@ export const DEFAULT_PROGRESS: ProgressData = {
   unlockedLevel: 1,
   levelBestScores: {},
   practiceHighScores: {},
-  settings: { defaultCols: 5, defaultRows: 6 },
+  settings: { defaultCols: 5, defaultRows: 5 },
 };
 
 export async function loadSignedProgress(secret: string): Promise<ProgressData> {

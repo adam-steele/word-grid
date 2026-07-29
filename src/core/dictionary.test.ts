@@ -25,7 +25,7 @@ describe('dictionary filters', () => {
   });
 
   it('includes well-known 3-letter words', () => {
-    for (const word of ['CAT', 'DOG', 'THE', 'AND', 'RUN', 'ART']) {
+    for (const word of ['CAT', 'DOG', 'THE', 'AND', 'RUN', 'ART', 'BOG', 'DEW']) {
       expect(play3.has(word)).toBe(true);
       expect(score3.has(word)).toBe(true);
     }

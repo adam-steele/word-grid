@@ -2,7 +2,7 @@
  * Builds dictionary JSON + position-stats from NASPA Word List (NWL2023).
  *
  * Play / scoring filters:
- * - 3–4 letters: NWL ∩ Google 10k common English (− blocklist)
+ * - 3–4 letters: NWL ∩ (Google 10k ∪ allowlist) − blocklist
  * - 5+ letters:  NWL ∩ ENABLE standard dictionary (− blocklist)
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -150,10 +150,17 @@ function loadBlocklist(): Set<string> {
   return parseWordList(readFileSync(path, 'utf8'));
 }
 
+function loadAllowlist(): Set<string> {
+  const path = join(dataDir, 'allowlist.txt');
+  if (!existsSync(path)) return new Set();
+  return parseWordList(readFileSync(path, 'utf8'));
+}
+
 /** Row validation + general play dictionary */
 function includeInPlayDictionary(
   word: string,
   commonGoogle: Set<string>,
+  allowlist: Set<string>,
   enableWords: Set<string>,
   blocklist: Set<string>,
 ): boolean {
@@ -161,8 +168,11 @@ function includeInPlayDictionary(
 
   const len = word.length;
   if (len <= 4) {
-    if (commonGoogle.size === 0) return enableWords.size === 0 || enableWords.has(word);
-    return commonGoogle.has(word);
+    if (commonGoogle.has(word) || allowlist.has(word)) return true;
+    if (commonGoogle.size === 0 && allowlist.size === 0) {
+      return enableWords.size === 0 || enableWords.has(word);
+    }
+    return false;
   }
   if (enableWords.size === 0) return true;
   return enableWords.has(word);
@@ -172,10 +182,11 @@ function includeInPlayDictionary(
 function includeInScoring(
   word: string,
   commonGoogle: Set<string>,
+  allowlist: Set<string>,
   enableWords: Set<string>,
   blocklist: Set<string>,
 ): boolean {
-  return includeInPlayDictionary(word, commonGoogle, enableWords, blocklist);
+  return includeInPlayDictionary(word, commonGoogle, allowlist, enableWords, blocklist);
 }
 
 type PositionStats = Record<number, Record<string, number>>;
@@ -207,9 +218,11 @@ const allWords = await loadWords();
 const commonGoogle = await loadGoogle10k();
 const enableWords = loadEnableWords();
 const blocklist = loadBlocklist();
+const allowlist = loadAllowlist();
 
 console.log(`Total words (3+ letters): ${allWords.length}`);
 if (blocklist.size) console.log(`Blocklist: ${blocklist.size} words`);
+if (allowlist.size) console.log(`Allowlist: ${allowlist.size} words`);
 
 mkdirSync(outDir, { recursive: true });
 mkdirSync(scoringOutDir, { recursive: true });
@@ -220,10 +233,10 @@ mkdirSync(statsDir, { recursive: true });
 for (const len of WORD_LENGTHS) {
   const nwlAtLength = allWords.filter((w) => w.length === len).sort();
   const filtered = nwlAtLength.filter((w) =>
-    includeInPlayDictionary(w, commonGoogle, enableWords, blocklist),
+    includeInPlayDictionary(w, commonGoogle, allowlist, enableWords, blocklist),
   );
   const scoring = filtered.filter((w) =>
-    includeInScoring(w, commonGoogle, enableWords, blocklist),
+    includeInScoring(w, commonGoogle, allowlist, enableWords, blocklist),
   );
 
   writeFileSync(join(outDir, `${len}.json`), JSON.stringify(filtered));
@@ -249,4 +262,4 @@ if (existsSync(levelsSrc)) {
   writeFileSync(levelsDest, readFileSync(levelsSrc, 'utf8'));
 }
 
-console.log('\nDictionary build complete (NWL + strict 3/4-letter + ENABLE 5+).');
+console.log('\nDictionary build complete (NWL + Google/allowlist 3/4-letter + ENABLE 5+).');

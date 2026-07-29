@@ -78,15 +78,43 @@ Example: `"E@1"` with count ~1200+ is easy; `"X@0"` with count ~40 is hard.
   "name": "Easy Vowel",
   "grid": { "rows": 6, "cols": 5 },
   "prefilled": [{ "row": 2, "col": 1, "letter": "E" }],
-  "threshold": 35
+  "threshold": 254
 }
 ```
 
+Generate 50 levels with calibrated thresholds:
+
+```bash
+npm run generate:levels   # writes src/data/levels.json + level-manifest.json
+npm run analyze:scoring   # Monte Carlo pass-rate report
+```
+
+**Level tiers:** 1–10 (~85–90% pass), 11–20 (~75–80%), stepping down ~10% per block to 41–50 (~45–55%).
+
 ## Dictionary
 
-On first `npm run build:data`, downloads ~25k words to `scripts/data/popular.txt`.  
-Override with your own list at `scripts/data/enable.txt` (one word per line).  
-On first build, **NASPA NWL2023** (~190k words, official US/Canada Scrabble lexicon) is auto-downloaded.
+Word lists are built from **NWL2023** (Scrabble lexicon) filtered through **SCOWL** (Spell Checker Oriented Word Lists, size 70). This keeps familiar dictionary words while dropping obscure Scrabble-only entries and most proper names. Players only download compact JSON word lists — never the full lexicon dump.
+
+### First-time / rare lexicon build (dev only)
+
+```bash
+npm run build:lexicon   # downloads SCOWL (~2.3 MB) if missing, writes lexicon-valid.json
+```
+
+Produces `scripts/data/lexicon-valid.json` (cached; committed for CI). Re-run when exclusion rules or SCOWL gate settings change.
+
+Then:
+
+```bash
+npm run build:data          # dictionary JSON + encoded levels
+npm run analyze:dictionary  # coverage report (3/4-letter counts, rejection reasons)
+```
+
+**Inclusion rule:** `NWL ∩ SCOWL(words, size 70) − proper/upper names − blocklist ∪ allowlist`  
+Names are rejected when SCOWL lists them as proper-names or upper-case entries and the word only appears at frequency band >35 (obscure). Common dictionary homographs (e.g. ART, MARK) are kept.
+**Manual overrides:** `scripts/data/allowlist.txt`, `scripts/data/blocklist.txt`
+
+**Scoring multipliers:** horizontal 1.0, vertical 1.35, diagonal 1.6
 
 **Scoring rules:**
 - Minimum **3 letters** for all scored words

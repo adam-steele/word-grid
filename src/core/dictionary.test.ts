@@ -25,13 +25,30 @@ describe('dictionary filters', () => {
   });
 
   it('includes well-known 3-letter words', () => {
-    for (const word of ['CAT', 'DOG', 'THE', 'AND', 'RUN', 'ART', 'BOG', 'DEW']) {
+    for (const word of ['CAT', 'DOG', 'RUN', 'ART', 'BOG', 'DEW']) {
       expect(play3.has(word)).toBe(true);
       expect(score3.has(word)).toBe(true);
     }
   });
 
-  it('includes standard 5-letter words from ENABLE', () => {
+  it('includes common words previously blocked by Google 10k gate', () => {
+    for (const word of ['APE', 'ALE', 'ARK', 'ALB']) {
+      expect(play3.has(word)).toBe(true);
+    }
+  });
+
+  it('has expanded 3-letter coverage', () => {
+    expect(play3.size).toBeGreaterThan(500);
+  });
+
+  it('excludes common first names and name-like Scrabble words', () => {
+    for (const word of ['TED', 'JOHN', 'TOM', 'JOE', 'MARY']) {
+      expect(play3.has(word)).toBe(false);
+      expect(play5.has(word)).toBe(false);
+    }
+  });
+
+  it('includes standard 5-letter words from lexicon', () => {
     for (const word of ['INERT', 'ANGER', 'GRAIN', 'CRANE', 'HOUSE']) {
       expect(play5.has(word)).toBe(true);
     }

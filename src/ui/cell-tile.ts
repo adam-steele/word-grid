@@ -13,46 +13,119 @@ export function renderCellContent(letter: string): string {
   `;
 }
 
-const STROKE = {
-  vertical: { color: 'rgba(96, 165, 250, 0.55)', dash: '' },
-  diagonal: { color: 'rgba(251, 191, 36, 0.6)', dash: '0.15 0.1' },
+const CAPSULE = {
+  vertical: 'rgba(110, 117, 184, 0.95)',
+  diagonal: 'rgba(255, 207, 64, 0.95)',
 } as const;
+
+/** Letter anchor as a fraction of cell height (matches play-session tile layout). */
+export const LETTER_Y_RATIO = 0.553;
+/** Capsule half-width as a fraction of cell width. */
+export const CAPSULE_RADIUS_RATIO = 0.25;
 
 export type OverlayIntensity = 'play' | 'final';
 
-/** Crossword-style paths — rendered behind cells */
+function axisSize(count: number, gapRatio: number): number {
+  return count + Math.max(0, count - 1) * gapRatio;
+}
+
+export function letterCenter(
+  row: number,
+  col: number,
+  gapRatio: number,
+): { x: number; y: number } {
+  return {
+    x: col * (1 + gapRatio) + 0.5,
+    y: row * (1 + gapRatio) + LETTER_Y_RATIO,
+  };
+}
+
+export function semicircleSweep(
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+  pivot: { x: number; y: number },
+  via: { x: number; y: number },
+): 0 | 1 {
+  const chordX = to.x - from.x;
+  const chordY = to.y - from.y;
+  const viaX = via.x - pivot.x;
+  const viaY = via.y - pivot.y;
+  const cross = chordX * viaY - chordY * viaX;
+  return cross > 0 ? 0 : 1;
+}
+
+/** Hollow capsule outline along a scored word path (viewBox cell units). */
+export function capsuleOutlinePath(
+  cells: Array<{ row: number; col: number }>,
+  gapRatio: number,
+  radius = CAPSULE_RADIUS_RATIO,
+): string {
+  if (cells.length < 2) return '';
+
+  const pts = cells.map((c) => letterCenter(c.row, c.col, gapRatio));
+  const start = pts[0]!;
+  const end = pts[pts.length - 1]!;
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const len = Math.hypot(dx, dy);
+  if (len < 1e-6) return '';
+
+  const ux = dx / len;
+  const uy = dy / len;
+  const px = -uy;
+  const py = ux;
+
+  const ls = { x: start.x + px * radius, y: start.y + py * radius };
+  const rs = { x: start.x - px * radius, y: start.y - py * radius };
+  const le = { x: end.x + px * radius, y: end.y + py * radius };
+  const re = { x: end.x - px * radius, y: end.y - py * radius };
+
+  const startBack = { x: start.x - ux * radius, y: start.y - uy * radius };
+  const endForward = { x: end.x + ux * radius, y: end.y + uy * radius };
+
+  const sweepStart = semicircleSweep(ls, rs, start, startBack);
+  const sweepEnd = semicircleSweep(re, le, end, endForward);
+
+  return [
+    `M ${ls.x} ${ls.y}`,
+    `A ${radius} ${radius} 0 0 ${sweepStart} ${rs.x} ${rs.y}`,
+    `L ${re.x} ${re.y}`,
+    `A ${radius} ${radius} 0 0 ${sweepEnd} ${le.x} ${le.y}`,
+    'Z',
+  ].join(' ');
+}
+
+/** Word-search capsule outlines — rendered between tile fill and border */
 export function renderWordOverlay(
   size: GridSize,
   breakdown: ScoreBreakdown[],
   intensity: OverlayIntensity = 'play',
+  gapRatio = 0.1,
 ): string {
   const words = breakdown.filter(
     (w) => w.direction === 'vertical' || w.direction === 'diagonal',
   );
   if (!words.length) return '';
 
-  const strokeWidth = intensity === 'play' ? 0.1 : 0.14;
-  const opacity = intensity === 'play' ? 0.7 : 0.85;
+  const viewW = axisSize(size.cols, gapRatio);
+  const viewH = axisSize(size.rows, gapRatio);
+  const clipId = `grid-clip-${size.cols}x${size.rows}`;
+  const strokeClass =
+    intensity === 'play' ? 'word-capsule word-capsule-play' : 'word-capsule word-capsule-final';
 
-  const vertical = words.filter((w) => w.direction === 'vertical');
-  const diagonal = words.filter((w) => w.direction === 'diagonal');
-
-  const shapes = [...vertical, ...diagonal]
+  const shapes = words
     .map((word) => {
-      const style =
-        word.direction === 'vertical' ? STROKE.vertical : STROKE.diagonal;
-      const points = word.cells.map((c) => `${c.col + 0.5},${c.row + 0.5}`).join(' ');
+      const d = capsuleOutlinePath(word.cells, gapRatio);
+      if (!d) return '';
+      const color =
+        word.direction === 'vertical' ? CAPSULE.vertical : CAPSULE.diagonal;
       return `
-        <polyline
-          class="word-path word-path-${word.direction}"
-          points="${points}"
+        <path
+          class="${strokeClass} word-capsule-${word.direction}"
+          d="${d}"
           fill="none"
-          stroke="${style.color}"
-          stroke-width="${strokeWidth}"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-dasharray="${style.dash}"
-          opacity="${opacity}"
+          stroke="${color}"
+          vector-effect="non-scaling-stroke"
         />
       `;
     })
@@ -61,25 +134,32 @@ export function renderWordOverlay(
   return `
     <svg
       class="word-overlay word-overlay-${intensity}"
-      viewBox="0 0 ${size.cols} ${size.rows}"
+      viewBox="0 0 ${viewW} ${viewH}"
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      ${shapes}
+      <defs>
+        <clipPath id="${clipId}">
+          <rect x="0" y="0" width="${viewW}" height="${viewH}" />
+        </clipPath>
+      </defs>
+      <g clip-path="url(#${clipId})">
+        ${shapes}
+      </g>
     </svg>
   `;
 }
 
 export const HIGHLIGHT_RING: Record<HighlightKind, string> = {
-  vertical: 'ring-vertical',
-  diagonal: 'ring-diagonal',
+  vertical: '',
+  diagonal: '',
   horizontal: '',
   'vertical-diagonal': 'ring-v-d',
   none: '',
 };
 
-/** Inset ring on scored vertical/diagonal cells — play and final */
+/** Inset ring only when a cell is in both a vertical and diagonal word */
 export function ringClassFor(kind: HighlightKind): string {
-  if (kind === 'none' || kind === 'horizontal') return '';
-  return HIGHLIGHT_RING[kind] ?? '';
+  if (kind === 'vertical-diagonal') return HIGHLIGHT_RING['vertical-diagonal'];
+  return '';
 }

@@ -44,7 +44,9 @@ export function renderGrid(
     </div>`
       : '';
 
-  const overlay = showPaths ? renderWordOverlay(size, scored, intensity) : '';
+  const overlay = showPaths
+    ? renderWordOverlay(size, scored, intensity, intensity === 'play' ? 0.1 : 0.12)
+    : '';
 
   container.innerHTML = `
     ${legend}

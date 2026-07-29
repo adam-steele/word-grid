@@ -131,7 +131,6 @@ body {
 .grid-wrap .grid {
   margin: 0;
   position: relative;
-  z-index: 1;
 }
 
 .session .grid-wrap {
@@ -184,28 +183,60 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
+}
+
+.word-capsule {
+  fill: none;
+}
+
+.word-capsule-play {
+  stroke-width: 2.25px;
+}
+
+.word-capsule-final {
+  stroke-width: 2.5px;
 }
 
 .cell {
   position: relative;
   aspect-ratio: 1;
-  border: 2px solid var(--border);
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
   font-weight: 700;
   text-transform: uppercase;
-  background: var(--surface);
+  background: transparent;
   border-radius: 3px;
+}
+
+.cell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--surface);
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--border);
+  border-radius: inherit;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .cell-letter {
   line-height: 1;
   transform: translateY(-0.08em);
   position: relative;
-  z-index: 1;
+  z-index: 3;
 }
 
 .cell-points {
@@ -217,7 +248,7 @@ body {
   line-height: 1;
   color: var(--text-muted);
   pointer-events: none;
-  z-index: 1;
+  z-index: 3;
 }
 
 .cell-points-high {
@@ -233,32 +264,30 @@ body {
   color: #fca5a5;
 }
 
-/* Thin inset borders on scored vertical/diagonal cells */
-.cell.ring-vertical {
-  box-shadow: inset 0 0 0 1.5px rgba(110, 117, 184, 0.95);
-}
-
-.cell.ring-diagonal {
-  box-shadow: inset 0 0 0 1.5px rgba(255, 207, 64, 0.95);
-}
-
-.cell.ring-v-d {
+/* Inset ring when a cell is in both a vertical and diagonal word */
+.cell.ring-v-d::after {
   box-shadow: inset 0 0 0 1.5px rgba(114, 163, 132, 0.95);
 }
 
-.cell.active-row.editing,
-.cell.active-row.empty {
+.cell.active-row.editing::after,
+.cell.active-row.empty::after {
   border-color: var(--border-strong);
   animation: pulse 1s infinite;
 }
 
-.cell.locked {
+.cell.locked::after {
   border-color: var(--border);
 }
 
-.cell.prefilled {
+.cell.prefilled::before {
   background: #3d1f1f;
+}
+
+.cell.prefilled::after {
   border-color: var(--prefilled);
+}
+
+.cell.prefilled {
   color: #fca5a5;
 }
 
@@ -294,7 +323,7 @@ body {
 }
 .swatch-h { background: #3a5244; border-color: var(--hl-horizontal); }
 
-.grid-final .cell.locked {
+.grid-final .cell.locked::after {
   border-color: var(--border);
 }
 

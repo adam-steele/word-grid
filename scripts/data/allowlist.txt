@@ -1,4 +1,4 @@
-# NWL-valid words missing from Google 10k — still common enough to play
+# Tutorial + game-critical words (some missing from WordNet 3.1)
 BOG
 DEW
 FOG
@@ -27,3 +27,13 @@ TUG
 WIG
 WOK
 ZOO
+RAINS
+ANGERS
+NERD
+NERDS
+RAN
+GRAINS
+EDITS
+GEARS
+RENTS
+SENSE

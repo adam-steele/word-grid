@@ -1,4 +1,5 @@
 import type { ValidationMode } from './types.js';
+import { resolveLevelEncodeKey } from './level-key.js';
 
 export function getValidationMode(): ValidationMode {
   return typeof __VALIDATION_MODE__ !== 'undefined'
@@ -26,5 +27,5 @@ export function getProgressSecret(): string {
 }
 
 export function getLevelEncodeKey(): string {
-  return import.meta.env.VITE_LEVEL_ENCODE_KEY as string;
+  return resolveLevelEncodeKey(import.meta.env.VITE_LEVEL_ENCODE_KEY as string | undefined);
 }

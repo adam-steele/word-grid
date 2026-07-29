@@ -9,8 +9,8 @@ export const SCRABBLE_VALUES: Record<string, number> = {
 
 export const DIRECTION_MULTIPLIERS = {
   horizontal: 1.0,
-  vertical: 1.5,
-  diagonal: 2.0,
+  vertical: 1.35,
+  diagonal: 1.6,
 } as const;
 
 export type Direction = keyof typeof DIRECTION_MULTIPLIERS;

@@ -5,7 +5,6 @@ import { renderMenu } from './ui/menu.js';
 async function boot(): Promise<void> {
   document.documentElement.dataset.validationMode = getValidationMode();
 
-  // Warm progress load (validates signature early)
   const provider = getValidationProvider();
   await provider.loadProgress();
 

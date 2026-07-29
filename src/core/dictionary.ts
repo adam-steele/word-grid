@@ -1,11 +1,34 @@
 const cache = new Map<string, Set<string>>();
+let loadedVersion: string | null = null;
+
+interface DictionaryVersion {
+  builtAt: string;
+  gate?: string;
+  version?: number;
+}
+
+async function ensureDictionaryVersion(): Promise<string> {
+  if (loadedVersion) return loadedVersion;
+
+  const res = await fetch('/dictionary/version.json', { cache: 'no-store' });
+  if (!res.ok) return '';
+  const meta = (await res.json()) as DictionaryVersion;
+  loadedVersion = meta.builtAt ?? '';
+  return loadedVersion;
+}
+
+async function fetchDictionaryJson(path: string): Promise<string[]> {
+  const version = await ensureDictionaryVersion();
+  const url = version ? `${path}?v=${encodeURIComponent(version)}` : path;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Dictionary not found: ${path}`);
+  return (await res.json()) as string[];
+}
 
 export async function loadDictionary(wordLength: number): Promise<Set<string>> {
   if (cache.has(String(wordLength))) return cache.get(String(wordLength))!;
 
-  const res = await fetch(`/dictionary/${wordLength}.json`);
-  if (!res.ok) throw new Error(`Dictionary for length ${wordLength} not found`);
-  const words = (await res.json()) as string[];
+  const words = await fetchDictionaryJson(`/dictionary/${wordLength}.json`);
   const set = new Set(words.map((w) => w.toUpperCase()));
   cache.set(String(wordLength), set);
   return set;
@@ -16,9 +39,7 @@ export async function loadScoringDictionary(wordLength: number): Promise<Set<str
   const key = `scoring:${wordLength}`;
   if (cache.has(key)) return cache.get(key)!;
 
-  const res = await fetch(`/dictionary/scoring/${wordLength}.json`);
-  if (!res.ok) throw new Error(`Scoring dictionary for length ${wordLength} not found`);
-  const words = (await res.json()) as string[];
+  const words = await fetchDictionaryJson(`/dictionary/scoring/${wordLength}.json`);
   const set = new Set(words.map((w) => w.toUpperCase()));
   cache.set(key, set);
   return set;
@@ -53,4 +74,10 @@ export function isValidWord(word: string, dict: Set<string>): boolean {
 /** Horizontal row words must match column count exactly */
 export async function loadRowDictionary(cols: number): Promise<Set<string>> {
   return loadDictionary(cols);
+}
+
+/** Clear in-memory dictionary cache (e.g. after hot reload in dev). */
+export function clearDictionaryCache(): void {
+  cache.clear();
+  loadedVersion = null;
 }

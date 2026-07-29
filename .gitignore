@@ -9,6 +9,9 @@ worker/data/*.json
 scripts/data/nwl2023.txt
 scripts/data/enable.txt
 scripts/data/popular.txt
+scripts/data/scowl.tar.gz
+scripts/data/scowl-2014.08.11.1/
+scripts/data/kaikki-english.jsonl.gz
 src/data/position-stats-*.json
 src/data/flexibility-*.json
 .DS_Store

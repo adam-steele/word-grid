@@ -2,71 +2,1141 @@
   {
     "id": 1,
     "name": "Warm Up",
-    "grid": { "rows": 6, "cols": 5 },
-    "prefilled": [],
-    "threshold": 25
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "E"
+      }
+    ],
+    "threshold": 254
   },
   {
     "id": 2,
-    "name": "Easy Vowel",
-    "grid": { "rows": 6, "cols": 5 },
-    "prefilled": [{ "row": 2, "col": 1, "letter": "E" }],
-    "threshold": 35
+    "name": "Middle Vowel",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "O"
+      }
+    ],
+    "threshold": 259
   },
   {
     "id": 3,
-    "name": "Two Hints",
-    "grid": { "rows": 6, "cols": 5 },
+    "name": "Bottom Row",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
     "prefilled": [
-      { "row": 2, "col": 1, "letter": "O" },
-      { "row": 4, "col": 3, "letter": "A" }
+      {
+        "row": 4,
+        "col": 2,
+        "letter": "A"
+      }
     ],
-    "threshold": 45
+    "threshold": 255
   },
   {
     "id": 4,
-    "name": "Short Words",
-    "grid": { "rows": 5, "cols": 4 },
-    "prefilled": [{ "row": 1, "col": 0, "letter": "S" }],
-    "threshold": 40
+    "name": "Compact",
+    "grid": {
+      "rows": 5,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 0,
+        "letter": "S"
+      }
+    ],
+    "threshold": 207
   },
   {
     "id": 5,
-    "name": "Mid Grid",
-    "grid": { "rows": 6, "cols": 5 },
+    "name": "Short Row",
+    "grid": {
+      "rows": 5,
+      "cols": 4
+    },
     "prefilled": [
-      { "row": 0, "col": 2, "letter": "R" },
-      { "row": 3, "col": 4, "letter": "E" }
+      {
+        "row": 1,
+        "col": 0,
+        "letter": "T"
+      }
     ],
-    "threshold": 55
+    "threshold": 139
   },
   {
     "id": 6,
-    "name": "Three Locks",
-    "grid": { "rows": 7, "cols": 5 },
+    "name": "Late Hint",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
     "prefilled": [
-      { "row": 2, "col": 0, "letter": "T" },
-      { "row": 4, "col": 2, "letter": "I" },
-      { "row": 5, "col": 4, "letter": "S" }
+      {
+        "row": 3,
+        "col": 3,
+        "letter": "E"
+      }
     ],
-    "threshold": 65
+    "threshold": 262
   },
   {
     "id": 7,
-    "name": "Hard Start",
-    "grid": { "rows": 6, "cols": 5 },
-    "prefilled": [{ "row": 1, "col": 0, "letter": "X" }],
-    "threshold": 50
+    "name": "Twin Hints",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "O"
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "letter": "E"
+      }
+    ],
+    "threshold": 312
   },
   {
     "id": 8,
-    "name": "Expert",
-    "grid": { "rows": 6, "cols": 6 },
+    "name": "Spread",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
     "prefilled": [
-      { "row": 0, "col": 0, "letter": "Q" },
-      { "row": 2, "col": 3, "letter": "Z" },
-      { "row": 4, "col": 1, "letter": "O" }
+      {
+        "row": 1,
+        "col": 2,
+        "letter": "A"
+      },
+      {
+        "row": 4,
+        "col": 0,
+        "letter": "S"
+      }
     ],
-    "threshold": 75
+    "threshold": 307
+  },
+  {
+    "id": 9,
+    "name": "Deep Grid",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "O"
+      },
+      {
+        "row": 5,
+        "col": 1,
+        "letter": "I"
+      }
+    ],
+    "threshold": 316
+  },
+  {
+    "id": 10,
+    "name": "Bookends",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "E"
+      },
+      {
+        "row": 6,
+        "col": 2,
+        "letter": "A"
+      }
+    ],
+    "threshold": 313
+  },
+  {
+    "id": 11,
+    "name": "Steady 1",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 4,
+        "col": 2,
+        "letter": "I"
+      }
+    ],
+    "threshold": 321
+  },
+  {
+    "id": 12,
+    "name": "Steady 2",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 1,
+        "col": 1,
+        "letter": "E"
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "E"
+      }
+    ],
+    "threshold": 277
+  },
+  {
+    "id": 13,
+    "name": "Steady 3",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 4,
+        "letter": "I"
+      }
+    ],
+    "threshold": 373
+  },
+  {
+    "id": 14,
+    "name": "Steady 4",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "U"
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "letter": "E"
+      }
+    ],
+    "threshold": 381
+  },
+  {
+    "id": 15,
+    "name": "Steady 5",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 1,
+        "col": 3,
+        "letter": "E"
+      },
+      {
+        "row": 6,
+        "col": 3,
+        "letter": "E"
+      }
+    ],
+    "threshold": 330
+  },
+  {
+    "id": 16,
+    "name": "Steady 6",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "U"
+      }
+    ],
+    "threshold": 266
+  },
+  {
+    "id": 17,
+    "name": "Steady 7",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "U"
+      },
+      {
+        "row": 4,
+        "col": 1,
+        "letter": "R"
+      }
+    ],
+    "threshold": 317
+  },
+  {
+    "id": 18,
+    "name": "Steady 8",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 4,
+        "letter": "E"
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "A"
+      }
+    ],
+    "threshold": 280
+  },
+  {
+    "id": 19,
+    "name": "Steady 9",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "A"
+      }
+    ],
+    "threshold": 272
+  },
+  {
+    "id": 20,
+    "name": "Steady 10",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 4,
+        "letter": "E"
+      }
+    ],
+    "threshold": 272
+  },
+  {
+    "id": 21,
+    "name": "Climb 1",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 4,
+        "letter": "I"
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "letter": "E"
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "letter": "R"
+      }
+    ],
+    "threshold": 384
+  },
+  {
+    "id": 22,
+    "name": "Climb 2",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "R"
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "letter": "I"
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "letter": "T"
+      }
+    ],
+    "threshold": 334
+  },
+  {
+    "id": 23,
+    "name": "Climb 3",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 1,
+        "col": 1,
+        "letter": "R"
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "I"
+      }
+    ],
+    "threshold": 328
+  },
+  {
+    "id": 24,
+    "name": "Climb 4",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 2,
+        "col": 2,
+        "letter": "R"
+      },
+      {
+        "row": 4,
+        "col": 1,
+        "letter": "U"
+      }
+    ],
+    "threshold": 387
+  },
+  {
+    "id": 25,
+    "name": "Climb 5",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 1,
+        "letter": "O"
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "letter": "R"
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "letter": "A"
+      }
+    ],
+    "threshold": 397
+  },
+  {
+    "id": 26,
+    "name": "Climb 6",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "U"
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "letter": "A"
+      }
+    ],
+    "threshold": 336
+  },
+  {
+    "id": 27,
+    "name": "Climb 7",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "O"
+      },
+      {
+        "row": 6,
+        "col": 3,
+        "letter": "E"
+      },
+      {
+        "row": 4,
+        "col": 4,
+        "letter": "T"
+      }
+    ],
+    "threshold": 346
+  },
+  {
+    "id": 28,
+    "name": "Climb 8",
+    "grid": {
+      "rows": 6,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "U"
+      },
+      {
+        "row": 4,
+        "col": 1,
+        "letter": "R"
+      },
+      {
+        "row": 1,
+        "col": 2,
+        "letter": "I"
+      }
+    ],
+    "threshold": 269
+  },
+  {
+    "id": 29,
+    "name": "Climb 9",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 2,
+        "letter": "R"
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "letter": "I"
+      }
+    ],
+    "threshold": 384
+  },
+  {
+    "id": 30,
+    "name": "Climb 10",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 1,
+        "letter": "A"
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "letter": "I"
+      },
+      {
+        "row": 4,
+        "col": 1,
+        "letter": "E"
+      }
+    ],
+    "threshold": 351
+  },
+  {
+    "id": 31,
+    "name": "Ridge 1",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 2,
+        "letter": "I"
+      },
+      {
+        "row": 6,
+        "col": 1,
+        "letter": "O"
+      }
+    ],
+    "threshold": 351
+  },
+  {
+    "id": 32,
+    "name": "Ridge 2",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 5,
+        "letter": "E"
+      },
+      {
+        "row": 3,
+        "col": 3,
+        "letter": "I"
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "letter": "E"
+      }
+    ],
+    "threshold": 400
+  },
+  {
+    "id": 33,
+    "name": "Ridge 3",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 4,
+        "col": 4,
+        "letter": "E"
+      },
+      {
+        "row": 5,
+        "col": 0,
+        "letter": "S"
+      },
+      {
+        "row": 6,
+        "col": 3,
+        "letter": "E"
+      }
+    ],
+    "threshold": 354
+  },
+  {
+    "id": 34,
+    "name": "Ridge 4",
+    "grid": {
+      "rows": 7,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 5,
+        "letter": "R"
+      },
+      {
+        "row": 0,
+        "col": 4,
+        "letter": "I"
+      },
+      {
+        "row": 3,
+        "col": 0,
+        "letter": "S"
+      }
+    ],
+    "threshold": 481
+  },
+  {
+    "id": 35,
+    "name": "Ridge 5",
+    "grid": {
+      "rows": 7,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 5,
+        "letter": "E"
+      },
+      {
+        "row": 3,
+        "col": 5,
+        "letter": "E"
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "U"
+      }
+    ],
+    "threshold": 478
+  },
+  {
+    "id": 36,
+    "name": "Ridge 6",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "A"
+      },
+      {
+        "row": 6,
+        "col": 4,
+        "letter": "E"
+      }
+    ],
+    "threshold": 360
+  },
+  {
+    "id": 37,
+    "name": "Ridge 7",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 1,
+        "letter": "R"
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "letter": "E"
+      }
+    ],
+    "threshold": 351
+  },
+  {
+    "id": 38,
+    "name": "Ridge 8",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "E"
+      },
+      {
+        "row": 2,
+        "col": 4,
+        "letter": "E"
+      },
+      {
+        "row": 5,
+        "col": 1,
+        "letter": "E"
+      }
+    ],
+    "threshold": 414
+  },
+  {
+    "id": 39,
+    "name": "Ridge 9",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "I"
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "letter": "E"
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "letter": "R"
+      }
+    ],
+    "threshold": 408
+  },
+  {
+    "id": 40,
+    "name": "Ridge 10",
+    "grid": {
+      "rows": 7,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 3,
+        "letter": "E"
+      },
+      {
+        "row": 0,
+        "col": 0,
+        "letter": "S"
+      },
+      {
+        "row": 6,
+        "col": 1,
+        "letter": "R"
+      }
+    ],
+    "threshold": 363
+  },
+  {
+    "id": 41,
+    "name": "Peak 1",
+    "grid": {
+      "rows": 7,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 1,
+        "letter": "U"
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "O"
+      },
+      {
+        "row": 1,
+        "col": 5,
+        "letter": "R"
+      },
+      {
+        "row": 4,
+        "col": 1,
+        "letter": "O"
+      }
+    ],
+    "threshold": 503
+  },
+  {
+    "id": 42,
+    "name": "Peak 2",
+    "grid": {
+      "rows": 8,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 6,
+        "col": 2,
+        "letter": "I"
+      },
+      {
+        "row": 1,
+        "col": 4,
+        "letter": "T"
+      },
+      {
+        "row": 4,
+        "col": 1,
+        "letter": "A"
+      },
+      {
+        "row": 0,
+        "col": 0,
+        "letter": "S"
+      }
+    ],
+    "threshold": 426
+  },
+  {
+    "id": 43,
+    "name": "Peak 3",
+    "grid": {
+      "rows": 7,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 6,
+        "col": 1,
+        "letter": "I"
+      },
+      {
+        "row": 0,
+        "col": 2,
+        "letter": "R"
+      },
+      {
+        "row": 5,
+        "col": 3,
+        "letter": "I"
+      },
+      {
+        "row": 3,
+        "col": 4,
+        "letter": "E"
+      }
+    ],
+    "threshold": 502
+  },
+  {
+    "id": 44,
+    "name": "Peak 4",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 5,
+        "col": 1,
+        "letter": "E"
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "E"
+      },
+      {
+        "row": 1,
+        "col": 0,
+        "letter": "S"
+      }
+    ],
+    "threshold": 415
+  },
+  {
+    "id": 45,
+    "name": "Peak 5",
+    "grid": {
+      "rows": 7,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 4,
+        "col": 1,
+        "letter": "O"
+      },
+      {
+        "row": 5,
+        "col": 5,
+        "letter": "E"
+      },
+      {
+        "row": 6,
+        "col": 3,
+        "letter": "I"
+      }
+    ],
+    "threshold": 499
+  },
+  {
+    "id": 46,
+    "name": "Peak 6",
+    "grid": {
+      "rows": 7,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 1,
+        "col": 3,
+        "letter": "I"
+      },
+      {
+        "row": 0,
+        "col": 3,
+        "letter": "I"
+      },
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "A"
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "I"
+      }
+    ],
+    "threshold": 508
+  },
+  {
+    "id": 47,
+    "name": "Peak 7",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "U"
+      },
+      {
+        "row": 4,
+        "col": 2,
+        "letter": "R"
+      },
+      {
+        "row": 0,
+        "col": 5,
+        "letter": "R"
+      }
+    ],
+    "threshold": 413
+  },
+  {
+    "id": 48,
+    "name": "Peak 8",
+    "grid": {
+      "rows": 6,
+      "cols": 6
+    },
+    "prefilled": [
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "E"
+      },
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "O"
+      },
+      {
+        "row": 5,
+        "col": 1,
+        "letter": "U"
+      },
+      {
+        "row": 1,
+        "col": 1,
+        "letter": "A"
+      }
+    ],
+    "threshold": 428
+  },
+  {
+    "id": 49,
+    "name": "Peak 9",
+    "grid": {
+      "rows": 8,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 2,
+        "col": 1,
+        "letter": "R"
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "R"
+      },
+      {
+        "row": 5,
+        "col": 2,
+        "letter": "I"
+      }
+    ],
+    "threshold": 416
+  },
+  {
+    "id": 50,
+    "name": "Peak 10",
+    "grid": {
+      "rows": 8,
+      "cols": 5
+    },
+    "prefilled": [
+      {
+        "row": 0,
+        "col": 1,
+        "letter": "O"
+      },
+      {
+        "row": 3,
+        "col": 1,
+        "letter": "E"
+      },
+      {
+        "row": 4,
+        "col": 4,
+        "letter": "T"
+      },
+      {
+        "row": 7,
+        "col": 0,
+        "letter": "S"
+      }
+    ],
+    "threshold": 430
   }
 ]

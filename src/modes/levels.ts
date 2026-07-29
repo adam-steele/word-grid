@@ -1,20 +1,14 @@
 import { startLevelSession } from './session.js';
 import { renderMenu } from '../ui/menu.js';
+import levelManifest from '../data/level-manifest.json';
 
 export { startLevelSession };
 
-const LEVEL_NAMES: Record<number, string> = {
-  1: 'Warm Up',
-  2: 'Easy Vowel',
-  3: 'Two Hints',
-  4: 'Short Words',
-  5: 'Mid Grid',
-  6: 'Three Locks',
-  7: 'Hard Start',
-  8: 'Expert',
-};
+export const TOTAL_LEVELS = levelManifest.length;
 
-export const TOTAL_LEVELS = 8;
+const LEVEL_NAMES: Record<number, string> = Object.fromEntries(
+  levelManifest.map((l) => [l.id, l.name]),
+);
 
 export function renderLevelSelect(container: HTMLElement, unlockedLevel: number): void {
   container.innerHTML = `
@@ -22,22 +16,25 @@ export function renderLevelSelect(container: HTMLElement, unlockedLevel: number)
       <button class="btn btn-ghost" id="back-btn">← Menu</button>
       <h2>Levels</h2>
       <p class="hint">Unlocked: ${Math.min(unlockedLevel, TOTAL_LEVELS)} / ${TOTAL_LEVELS}</p>
-      <div class="level-grid">
+      <div class="level-grid-scroll">
+        <div class="level-grid">
         ${Array.from({ length: TOTAL_LEVELS }, (_, i) => {
           const id = i + 1;
           const locked = id > unlockedLevel;
+          const name = LEVEL_NAMES[id] ?? `Level ${id}`;
           return `
             <button
               class="level-btn ${locked ? 'locked' : ''}"
               data-level="${id}"
               ${locked ? 'disabled' : ''}
-              aria-label="Level ${id}: ${LEVEL_NAMES[id] ?? ''}${locked ? ' (locked)' : ''}"
+              aria-label="Level ${id}: ${name}${locked ? ' (locked)' : ''}"
             >
               ${id}
-              <span class="level-name">${LEVEL_NAMES[id] ?? ''}</span>
+              <span class="level-name">${name}</span>
             </button>
           `;
         }).join('')}
+        </div>
       </div>
       <p class="hint">Levels load on demand — no spoilers in page source.</p>
     </div>

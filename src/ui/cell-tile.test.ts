@@ -99,7 +99,6 @@ describe('capsuleOutlinePath', () => {
 describe('semicircleSweep', () => {
   it('selects the arc through the backward point for a downward path', () => {
     const start = { x: 0.5, y: LETTER_Y_RATIO };
-    const end = { x: 0.5, y: LETTER_Y_RATIO + 2.1 };
     const r = CAPSULE_RADIUS_RATIO;
     const ux = 0;
     const uy = 1;
